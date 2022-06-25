@@ -2,6 +2,10 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/swaggo/gin-swagger/swaggerFiles"
+
+	_ "github.com/iamzhiyudong/go-gin-example/docs"
+	ginSwagger "github.com/swaggo/gin-swagger"
 
 	"github.com/iamzhiyudong/go-gin-example/middleware/jwt"
 	"github.com/iamzhiyudong/go-gin-example/pkg/setting"
@@ -28,6 +32,9 @@ func InitRouter() *gin.Engine {
 	// 		"message": "test",
 	// 	})
 	// })
+
+	// swagger
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	r.GET("/auth", api.GetAuth)
 
