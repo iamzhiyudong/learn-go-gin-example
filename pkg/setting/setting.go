@@ -57,6 +57,6 @@ func LoadApp() {
 		log.Fatalf("Fail to get section 'app': %v", err)
 	}
 
-	JwtSecret = sec.Key("JWT_SECRET").MustString("123456")
+	JwtSecret = sec.Key("JWT_SECRET").MustString("!@)*#)!@U#@*!@!)")
 	PageSize = sec.Key("PAGE_SIZE").MustInt(10)
 }
