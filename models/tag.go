@@ -72,3 +72,11 @@ func EditTag(id int, data interface{}) bool {
 
 // 	return nil
 // }
+
+// 硬删除
+func CleanAllTag() bool {
+	// Unscoped返回所有记录包括删除的记录
+	db.Unscoped().Where("deleted_on != ? ", 0).Delete(&Tag{})
+
+	return true
+}

@@ -108,6 +108,7 @@ func updateTimeStampForUpdateCallback(scope *gorm.Scope) {
 func deleteCallback(scope *gorm.Scope) {
 	if !scope.HasError() {
 		var extraOption string
+		// 用于获取删除操作
 		if str, ok := scope.Get("gorm:delete_option"); ok { // 检查是否手动指定了 delete_option
 			extraOption = fmt.Sprint(str)
 		}
