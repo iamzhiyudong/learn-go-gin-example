@@ -1,11 +1,5 @@
 package models
 
-import (
-	"time"
-
-	"github.com/jinzhu/gorm"
-)
-
 type Tag struct {
 	Model
 
@@ -65,15 +59,16 @@ func EditTag(id int, data interface{}) bool {
 	return true
 }
 
+// === 注释的方法已经被全局覆盖，不再需要
 // gorm所支持的回调方法
-func (tag *Tag) BeforeCreate(scope *gorm.Scope) error {
-	scope.SetColumn("CreatedOn", time.Now().Unix())
+// func (tag *Tag) BeforeCreate(scope *gorm.Scope) error {
+// 	scope.SetColumn("CreatedOn", time.Now().Unix())
 
-	return nil
-}
+// 	return nil
+// }
 
-func (tag *Tag) BeforeUpdate(scope *gorm.Scope) error {
-	scope.SetColumn("ModifiedOn", time.Now().Unix())
+// func (tag *Tag) BeforeUpdate(scope *gorm.Scope) error {
+// 	scope.SetColumn("ModifiedOn", time.Now().Unix())
 
-	return nil
-}
+// 	return nil
+// }

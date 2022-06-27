@@ -131,7 +131,11 @@ func EditTag(c *gin.Context) {
 	})
 }
 
-//删除文章标签
+// @Summary 删除文章标签
+// @Produce  json
+// @Param id path int true "ID"
+// @Success 200 {string} json "{"code":200,"data":{},"msg":"ok"}"
+// @Router /api/v1/tags/{id} [delete]
 func DeleteTag(c *gin.Context) {
 	id := com.StrTo(c.Param("id")).MustInt() // param 和 query
 
