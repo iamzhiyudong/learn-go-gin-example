@@ -24,7 +24,7 @@ func InitRouter() *gin.Engine {
 
 	r.Use(gin.Recovery())
 
-	gin.SetMode(setting.RunMode)
+	gin.SetMode(setting.ServerSetting.RunMode)
 
 	// 创建不同的 HTTP 方法绑定到Handlers中
 	// r.GET("/test", func(c *gin.Context) {

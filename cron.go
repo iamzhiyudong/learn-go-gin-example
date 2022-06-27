@@ -10,7 +10,7 @@ import (
 )
 
 // 定时任务
-func main() {
+func mainBack() {
 	log.Println("Starting...")
 
 	c := cron.New() // 会根据本地时间创建一个新（空白）的 Cron job runner

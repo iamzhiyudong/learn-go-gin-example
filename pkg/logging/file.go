@@ -2,50 +2,49 @@ package logging
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"time"
+
+	"github.com/iamzhiyudong/go-gin-example/pkg/file"
+	"github.com/iamzhiyudong/go-gin-example/pkg/setting"
 )
 
-var (
-	LogSavePath = "runtime/logs/"
-	LogSaveName = "log"
-	LogFileExt  = "log"
-	TimeFormat  = "20060102"
-)
-
+// 获取日志文件路径
 func getLogFilePath() string {
-	return fmt.Sprintf("%s", LogSavePath)
+	return fmt.Sprintf("%s%s", setting.AppSetting.RuntimeRootPath, setting.AppSetting.LogSavePath)
 }
 
-func getLogFileFullPath() string {
-	prefixPath := getLogFilePath()
-	suffixPath := fmt.Sprintf("%s%s.%s", LogSaveName, time.Now().Format(TimeFormat), LogFileExt)
-
-	return fmt.Sprintf("%s%s", prefixPath, suffixPath)
+// 生成日志文件名
+func getLogFileName() string {
+	return fmt.Sprintf("%s%s.%s",
+		setting.AppSetting.LogSaveName,
+		time.Now().Format(setting.AppSetting.TimeFormat),
+		setting.AppSetting.LogFileExt,
+	)
 }
 
-func openLogFile(filePath string) *os.File {
-	_, err := os.Stat(filePath) // 返回文件信息结构描述文件
-	switch {
-	case os.IsNotExist(err):
-		mkDir()
-	case os.IsPermission(err):
-		log.Fatalf("Permission :%v", err)
-	}
-
-	handle, err := os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644) // 文件 模式 权限
+// 打开日志文件
+func openLogFile(fileName, filePath string) (*os.File, error) {
+	dir, err := os.Getwd() // 当前根目录
 	if err != nil {
-		log.Fatalf("Fail to OpenFile :%v", err)
+		return nil, fmt.Errorf("os.Getwd err: %v", err)
 	}
 
-	return handle
-}
+	src := dir + "/" + filePath
+	perm := file.CheckPermission(src) // 检查权限
+	if perm == true {
+		return nil, fmt.Errorf("file.CheckPermission Permission denied src: %s", src)
+	}
 
-func mkDir() {
-	dir, _ := os.Getwd()                                      // 返回与当前目录对应的根路径名
-	err := os.MkdirAll(dir+"/"+getLogFilePath(), os.ModePerm) // 创建对应的目录以及所需的子目录, const定义ModePerm FileMode = 0777
+	err = file.IsNotExistMkDir(src) // 是否存在，不存在就创建
 	if err != nil {
-		panic(err)
+		return nil, fmt.Errorf("file.IsNotExistMkDir src: %s, err: %v", src, err)
 	}
+
+	f, err := file.Open(src+fileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644) // 打开
+	if err != nil {
+		return nil, fmt.Errorf("Fail to OpenFile :%v", err)
+	}
+
+	return f, nil
 }
