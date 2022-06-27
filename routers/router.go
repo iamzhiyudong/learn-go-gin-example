@@ -1,6 +1,8 @@
 package routers
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
 
@@ -9,6 +11,7 @@ import (
 
 	"github.com/iamzhiyudong/go-gin-example/middleware/jwt"
 	"github.com/iamzhiyudong/go-gin-example/pkg/setting"
+	"github.com/iamzhiyudong/go-gin-example/pkg/upload"
 	"github.com/iamzhiyudong/go-gin-example/routers/api"
 	v1 "github.com/iamzhiyudong/go-gin-example/routers/api/v1"
 )
@@ -33,8 +36,14 @@ func InitRouter() *gin.Engine {
 	// 	})
 	// })
 
+	// 当访问 $HOST/upload/images 时
+	// 将会读取到 $GOPATH/src/github.com/xxx/go-gin-example/runtime/upload/images 下的文件
+	r.StaticFS("/upload/images", http.Dir(upload.GetImageFullPath()))
+
 	// swagger
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	r.POST("/upload", api.UploadImage)
 
 	r.GET("/auth", api.GetAuth)
 
