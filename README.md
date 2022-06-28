@@ -3,12 +3,18 @@
 * [源项目地址](https://github.com/EDDYCJY/go-gin-example/blob/master/README_ZH.md)
 * [文档地址](https://eddycjy.com/posts/go/gin/2018-02-11-api-01/)
 
+### 项目初始化
+- 安装 mysql，新建 blog 数据库，导入 sql 文件，修改数据库配置
+- 安装 swagger， `swag init`，更新 swagger 文档
+- 启动项目
+
 ### CHANGE_LOG
 
 - 22-6-28
   - 添加部分关于 redis 的配置，没有实际使用
   - 提取处理错误和响应方法
   - 重构获取单个文章方法
+  - 整理项目结构
 
 - 22-06-27
   - 添加更新时间戳回调

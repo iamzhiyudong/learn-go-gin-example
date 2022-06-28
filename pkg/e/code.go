@@ -1,5 +1,6 @@
 package e
 
+// 定义消息代码
 const (
 	SUCCESS        = 200
 	ERROR          = 500

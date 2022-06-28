@@ -6,6 +6,7 @@ type Auth struct {
 	Password string `json:"password"`
 }
 
+// 检查用户名和密码是否正确
 func CheckAuth(username, password string) bool {
 	var auth Auth
 	db.Select("id").Where(Auth{Username: username, Password: password}).First(&auth)

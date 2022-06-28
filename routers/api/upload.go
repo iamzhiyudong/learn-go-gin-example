@@ -10,6 +10,7 @@ import (
 	"github.com/iamzhiyudong/go-gin-example/pkg/upload"
 )
 
+// 上传图片 handler
 func UploadImage(c *gin.Context) {
 	code := e.SUCCESS
 	data := make(map[string]string)

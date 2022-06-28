@@ -24,11 +24,13 @@ type Model struct {
 func Setup() {
 	// 连接数据库
 	var err error
-	db, err = gorm.Open(setting.DatabaseSetting.Type, fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
-		setting.DatabaseSetting.User,
-		setting.DatabaseSetting.Password,
-		setting.DatabaseSetting.Host,
-		setting.DatabaseSetting.Name))
+	db, err = gorm.Open(
+		setting.DatabaseSetting.Type,
+		fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
+			setting.DatabaseSetting.User,
+			setting.DatabaseSetting.Password,
+			setting.DatabaseSetting.Host,
+			setting.DatabaseSetting.Name))
 
 	if err != nil {
 		log.Println(err)
@@ -59,13 +61,13 @@ func CloseDB() {
 }
 
 // 修改时间戳回调
-// updateTimeStampForCreateCallback will set `CreatedOn`, `ModifiedOn` when creating
+// 在创建的时候，设置创建时间和修改时间
 func updateTimeStampForCreateCallback(scope *gorm.Scope) {
 	if !scope.HasError() {
 		nowTime := time.Now().Unix()
 		// 是否包含当前字段
 		if createTimeField, ok := scope.FieldByName("CreatedOn"); ok {
-			// 字段是否为空
+			// 字段是否为空 - 没有自定义的情况下
 			if createTimeField.IsBlank {
 				createTimeField.Set(nowTime)
 			}
@@ -79,7 +81,7 @@ func updateTimeStampForCreateCallback(scope *gorm.Scope) {
 	}
 }
 
-// updateTimeStampForUpdateCallback will set `ModifyTime` when updating
+// 在创建的时候，设置修改时间
 func updateTimeStampForUpdateCallback(scope *gorm.Scope) {
 	if _, ok := scope.Get("gorm:update_column"); !ok {
 		scope.SetColumn("ModifiedOn", time.Now().Unix())
@@ -95,7 +97,8 @@ func deleteCallback(scope *gorm.Scope) {
 			extraOption = fmt.Sprint(str)
 		}
 
-		deletedOnField, hasDeletedOnField := scope.FieldByName("DeletedOn") // 获取我们约定的删除字段，若存在则 UPDATE 软删除，若不存在则 DELETE 硬删除
+		// 获取我们约定的删除字段，若存在则 UPDATE 软删除，若不存在则 DELETE 硬删除
+		deletedOnField, hasDeletedOnField := scope.FieldByName("DeletedOn")
 
 		if !scope.Search.Unscoped && hasDeletedOnField {
 			scope.Raw(fmt.Sprintf(

@@ -29,13 +29,7 @@ func InitRouter() *gin.Engine {
 
 	gin.SetMode(setting.ServerSetting.RunMode)
 
-	// 创建不同的 HTTP 方法绑定到Handlers中
-	// r.GET("/test", func(c *gin.Context) {
-	// 	c.JSON(200, gin.H{
-	// 		"message": "test",
-	// 	})
-	// })
-
+	// 静态文件处理
 	// 当访问 $HOST/upload/images 时
 	// 将会读取到 $GOPATH/src/github.com/xxx/go-gin-example/runtime/upload/images 下的文件
 	r.StaticFS("/upload/images", http.Dir(upload.GetImageFullPath()))

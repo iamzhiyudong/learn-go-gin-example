@@ -9,6 +9,7 @@ import (
 	"github.com/iamzhiyudong/go-gin-example/pkg/util"
 )
 
+// JWT 中间件，处理 JWT 的校验和解析
 func JWT() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var code int
@@ -18,8 +19,9 @@ func JWT() gin.HandlerFunc {
 		token := c.Query("token")
 
 		if token == "" {
-			code = e.INVALID_PARAMS
+			code = e.ERROR_AUTH
 		} else {
+			// 解析 token 字符串
 			claims, err := util.ParseToken(token)
 			if err != nil {
 				code = e.ERROR_AUTH_CHECK_TOKEN_FAIL
@@ -35,10 +37,10 @@ func JWT() gin.HandlerFunc {
 				"data": data,
 			})
 
-			c.Abort()
+			c.Abort() // 中断请求
 			return
 		}
 
-		c.Next()
+		c.Next() // 放行
 	}
 }

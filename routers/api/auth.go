@@ -16,6 +16,13 @@ type auth struct {
 	Password string `valid:"Required; MaxSize(50)"`
 }
 
+// 登录 handler
+// @Summary 登录
+// @Produce  json
+// @Param username path int true "Username"
+// @Param password path int true "Password"
+// @Success 200 {string} json "{"code":200,"data":{ token: "" },"msg":"ok"}"
+// @Router /auth [get]
 func GetAuth(c *gin.Context) {
 	username := c.Query("username")
 	password := c.Query("password")
@@ -35,6 +42,7 @@ func GetAuth(c *gin.Context) {
 	if ok {
 		isExist := models.CheckAuth(username, password)
 		if isExist {
+			// 如果正确生成 token
 			token, err := util.GenerateToken(username, password)
 			if err != nil {
 				code = e.ERROR_AUTH_TOKEN
