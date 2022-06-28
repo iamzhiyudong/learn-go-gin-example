@@ -6,6 +6,7 @@ import (
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 	"github.com/iamzhiyudong/go-gin-example/models"
+	"github.com/iamzhiyudong/go-gin-example/pkg/app"
 	"github.com/iamzhiyudong/go-gin-example/pkg/e"
 	"github.com/iamzhiyudong/go-gin-example/pkg/logging"
 	"github.com/iamzhiyudong/go-gin-example/pkg/setting"
@@ -15,31 +16,27 @@ import (
 
 //获取单个文章
 func GetArticle(c *gin.Context) {
-	id := com.StrTo(c.Param("id")).MustInt()
+	appG := app.Gin{c}
 
+	id := com.StrTo(c.Param("id")).MustInt()
 	valid := validation.Validation{}
 	valid.Min(id, 1, "id").Message("ID必须大于0")
 
-	code := e.INVALID_PARAMS
-	var data interface{}
-	if !valid.HasErrors() {
-		if models.ExistArticleByID(id) {
-			data = models.GetArticle(id)
-			code = e.SUCCESS
-		} else {
-			code = e.ERROR_NOT_EXIST_ARTICLE
-		}
-	} else {
-		for _, err := range valid.Errors {
-			logging.Info("err.key: %s, err.message: %s", err.Key, err.Message)
-		}
+	// 验证阶段有错误直接返回
+	if valid.HasErrors() {
+		app.MarkErrors(valid.Errors)
+		appG.Response(http.StatusOK, e.INVALID_PARAMS, nil)
+		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code": code,
-		"msg":  e.GetMsg(code),
-		"data": data,
-	})
+	if models.ExistArticleByID(id) {
+		data := models.GetArticle(id)
+		appG.Response(http.StatusOK, e.SUCCESS, data)
+		return
+	} else {
+		appG.Response(http.StatusOK, e.ERROR_NOT_EXIST_ARTICLE, nil)
+		return
+	}
 }
 
 //获取多个文章
